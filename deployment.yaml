@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-web-services
+  labels:
+    app: blog-web-services
+spec:
+  ports:
+    - name: http
+      port: 8080
+  type: NodePort
+  selector:
+    app: blog-web-services
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blog-web-services
+  labels:
+    app: blog-web-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog-web-services
+  template:
+    metadata:
+      labels:
+        app: blog-web-services
+    spec:
+      containers:
+        - name: blog-web-services
+          image: dswoboda/blog-web-services:v0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080

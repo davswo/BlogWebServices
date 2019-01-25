@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/dswoboda/BlogWebServices/config"
+	"github.com/davswo/BlogWebServices/config"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/vrischmann/envconfig"
