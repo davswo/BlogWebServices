@@ -1,1 +1,8 @@
-*.idea
+.idea
+*.iml
+.vscode/
+/debug
+/temp_*
+vendor/
+.DS_Store
+telepresence.log
