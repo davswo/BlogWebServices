@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/davswo/BlogWebServices/blog"
 	"github.com/davswo/BlogWebServices/config"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -27,10 +28,7 @@ func main() {
 func startService(port string) error {
 	router := mux.NewRouter().StrictSlash(true)
 
-	router.HandleFunc("/blogs",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("Some Blog Posts will be sent here\n"))
-		}).
+	router.HandleFunc("/blogs", blog.GetAllBlogs).
 		Methods(http.MethodGet)
 
 	router.HandleFunc("/user/login",
