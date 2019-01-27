@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/davswo/BlogWebServices/blog"
 	"github.com/davswo/BlogWebServices/config"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/vrischmann/envconfig"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -27,9 +27,6 @@ func main() {
 
 func startService(port string) error {
 	router := mux.NewRouter().StrictSlash(true)
-
-	router.HandleFunc("/blogs", blog.GetAllBlogs).
-		Methods(http.MethodGet)
 
 	router.HandleFunc("/user/login",
 		func(w http.ResponseWriter, r *http.Request) {
@@ -62,8 +59,31 @@ func startService(port string) error {
 		}).
 		Methods(http.MethodPost)
 
+	router.HandleFunc("/blogs", getAllBlogs).
+		Methods(http.MethodGet)
+
 	log.Printf("Starting server on port %s ", port)
 
 	c := cors.AllowAll()
 	return http.ListenAndServe(":"+port, c.Handler(router))
+}
+
+func getAllBlogs(w http.ResponseWriter, r *http.Request) {
+	resp, err := http.Get("http://10.96.85.118:80/blogs")
+	//resp, err := http.Get("http://google.com")
+	if err != nil {
+		log.Panicf("Not able to reach backend node %v\n", err.Error())
+		w.Write([]byte("Not able to reach backend 1"))
+	}
+	respBody, bodyerr := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Not able to convert backend response %v\n", bodyerr.Error())
+		w.Write([]byte("Not able to reach backend 2"))
+		return
+	}
+	if respBody == nil || len(respBody) == 0 {
+		w.Write([]byte("Nothing to see here..."))
+	}
+
+	w.Write([]byte(fmt.Sprintf("We are here and this is the Body: %v", string(respBody))))
 }

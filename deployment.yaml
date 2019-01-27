@@ -1,3 +1,6 @@
+Currently not relevant: Use service.yaml
+
+
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
@@ -11,7 +14,7 @@ spec:
       revisionTemplate:
         spec:
           container:
-            image: dswoboda/blog-web-services:v0.1
+            image: dswoboda/blog-web-services:v0.3
             imagePullPolicy: IfNotPresent
           ports:
             - name: http
