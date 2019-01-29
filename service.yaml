@@ -1,34 +1,67 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: blog-web-service
+  name: blog-web-services
+  labels:
+    app: blog-web-services
 spec:
-  selector:
-    app: blog-web-service
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 9080
+      protocol: TCP
       targetPort: 8080
-      nodePort: 30001
-  clusterIP: 10.96.85.120
-  type: NodePort
+  selector:
+    app: blog-web-services
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: blog-web-service
+  name: blog-web-services
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: blog-web-service
+        app: blog-web-services
     spec:
       containers:
-
         - image: dswoboda/blog-web-services:v0.1
           imagePullPolicy: IfNotPresent
-          name: blog-web-service
+          name: blog-web-services
+          ports:
+            - name: http
+              containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blog-services
+  labels:
+    app: blog-services
+spec:
+  selector:
+    app: blog-services
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  clusterIP: 10.96.85.118
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blog-services
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blog-services
+    spec:
+      containers:
+        - image: dswoboda/blog-services:v0.1
+          imagePullPolicy: IfNotPresent
+          name: blog-services
           ports:
             - name: http
               containerPort: 8080
