@@ -69,8 +69,7 @@ func startService(port string) error {
 }
 
 func getAllBlogs(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("http://10.96.85.118:80/blogs")
-	//resp, err := http.Get("http://google.com")
+	resp, err := http.Get("http://blog-services:80/blogs")
 	if err != nil {
 		log.Panicf("Not able to reach backend node %v\n", err.Error())
 		w.Write([]byte("Not able to reach backend 1"))
@@ -81,9 +80,6 @@ func getAllBlogs(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Not able to reach backend 2"))
 		return
 	}
-	if respBody == nil || len(respBody) == 0 {
-		w.Write([]byte("Nothing to see here..."))
-	}
 
-	w.Write([]byte(fmt.Sprintf("We are here and this is the Body: %v", string(respBody))))
+	w.Write([]byte(fmt.Sprintf(string(respBody))))
 }
