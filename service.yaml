@@ -24,7 +24,7 @@ spec:
         app: blog-web-services
     spec:
       containers:
-        - image: dswoboda/blog-web-services:v0.1
+        - image: dswoboda/blog-web-services:v1.0
           imagePullPolicy: IfNotPresent
           name: blog-web-services
           ports:
@@ -59,7 +59,7 @@ spec:
         app: blog-services
     spec:
       containers:
-        - image: dswoboda/blog-services:v0.1
+        - image: dswoboda/blog-services:v1.1
           imagePullPolicy: IfNotPresent
           name: blog-services
           ports:

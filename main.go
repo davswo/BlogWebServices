@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/davswo/BlogWebServices/config"
 	"github.com/gorilla/mux"
@@ -53,11 +54,13 @@ func startService(port string) error {
 		}).
 		Methods(http.MethodGet)
 
-	router.HandleFunc("/user/blog/{blogId}",
+	router.HandleFunc("/user/blog/update/{blogId}",
 		func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("Update or create a new Blog\n"))
+			w.Write([]byte("Update a Blog\n"))
 		}).
 		Methods(http.MethodPost)
+
+	router.HandleFunc("/user/blog/create", createNewBlogPost).Methods(http.MethodPost)
 
 	router.HandleFunc("/blogs", getAllBlogs).
 		Methods(http.MethodGet)
@@ -81,5 +84,23 @@ func getAllBlogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Write([]byte(fmt.Sprintf(string(respBody))))
+}
+
+func createNewBlogPost(w http.ResponseWriter, r *http.Request) {
+	blogBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	resp, err := http.Post("http://blog-services:80/user/blog", "application/json", bytes.NewBuffer(blogBytes))
+	if err != nil {
+		log.Panicf("Not able to reach backend node %v\n", err.Error())
+		w.WriteHeader(resp.StatusCode)
+	}
+	respBody, bodyerr := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Not able to convert backend response %v\n", bodyerr.Error())
+	}
+	w.WriteHeader(resp.StatusCode)
 	w.Write([]byte(fmt.Sprintf(string(respBody))))
 }
